@@ -1,0 +1,12 @@
+{
+  "venvPath": ".",
+  "include": ["."],
+  "venv": "venv",
+  "reportMissingImports": true,
+  "reportAssignmentType": false,
+  "reportArgumentType": false,
+  "reportCallIssue": false,
+  "reportGeneralTypeIssues": "none",
+  "reportAttributeAccessIssue": "none",
+  "reportOptionalMemberAccess": "none"
+}

@@ -1,0 +1,38 @@
+import sys
+import os
+import asyncio
+
+# Thêm src vào PYTHONPATH
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
+
+from src.Features.LangChainAPI.persistence.RedisVSRepository import RedisVSRepository
+from src.SharedKernel.config.LLMConfig import EmbeddingFactory   # <-- thêm dòng này
+
+async def main():
+    # Tạo embedding_factory
+    embedding_factory = EmbeddingFactory()          # hoặc cách khởi tạo thực tế của bạn
+    repo = RedisVSRepository(embedding_factory=embedding_factory)   # <-- truyền vào đây
+    
+    source_name = "Samsung_SSD_Limited_Warranty_Vietnamese.pdf"
+    
+    print(f"Đang tìm kiếm theo source: {source_name}")
+    
+    try:
+        docs = await repo.search_by_source(source_name, k=10)
+        
+        print(f"\n✅ Tìm thấy {len(docs)} chunks trong Redis")
+        
+        if docs:
+            print("\n--- Sample chunk đầu tiên ---")
+            print("Content:", docs[0].page_content[:300] + "..." if len(docs[0].page_content) > 300 else docs[0].page_content)
+            print("Metadata:", docs[0].metadata)
+        else:
+            print("❌ Không tìm thấy chunk nào có source này.")
+            print("→ Nghĩa là ingest không lưu metadata 'source' đúng cách.")
+            
+    except AttributeError:
+        print("❌ Hàm search_by_source chưa tồn tại trong RedisVSRepository.")
+        print("Mình sẽ hướng dẫn thêm hàm này ngay dưới đây.")
+
+if __name__ == "__main__":
+    asyncio.run(main())
